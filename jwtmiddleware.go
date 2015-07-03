@@ -84,13 +84,12 @@ func (m *JWTMiddleware) logf(format string, args ...interface{}) {
 	}
 }
 
-// Special implementation for Negroni, but could be used elsewhere.
-func (m *JWTMiddleware) HandlerWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+func (m *JWTMiddleware) HandlerFunc(w http.ResponseWriter, r *http.Request) {
 	err := m.CheckJWT(w, r)
 
-	// If there was an error, do not call next.
-	if err == nil && next != nil {
-		next(w, r)
+	// If there was an error, do not continue.
+	if err != nil {
+		return
 	}
 }
 
